@@ -1,10 +1,23 @@
+
+"use client"
+
 import Link from "next/link"
-import { Crown, MessageCircle, Gamepad2, Info, Instagram, Twitter } from "lucide-react"
+import { Crown, MessageCircle, Gamepad2, Info, MessageSquareText } from "lucide-react"
 import Image from "next/image"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
+import { useFirestore, useDoc } from "@/firebase"
+import { doc } from "firebase/firestore"
 
 export default function Footer() {
+  const db = useFirestore()
+  const settingsRef = doc(db, "settings", "global")
+  const { data: settings } = useDoc(settingsRef)
+  
   const logo = PlaceHolderImages.find(img => img.id === "logo")
+
+  const whatsapp = settings?.whatsappNumber || "6282252881812"
+  const tiktok = settings?.tiktokUrl || "https://tiktok.com/@paulmaker.official"
+  const discord = settings?.discordUrl || "https://discord.gg/ae7h2D5RB2"
 
   return (
     <footer className="bg-card border-t border-border pt-16 pb-8">
@@ -29,11 +42,14 @@ export default function Footer() {
               Professional GTPS Livestream Promotion Service. Kami membantu server Anda mendapatkan exposure maksimal dengan livestream berkualitas tinggi.
             </p>
             <div className="flex gap-4">
-              <a href="https://whatsapp.com/channel/0029VbCIGLo8qIzzpS3UQf37" target="_blank" rel="noopener noreferrer" className="p-2 bg-secondary rounded-full hover:bg-primary transition-colors">
+              <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" className="p-2 bg-secondary rounded-full hover:bg-primary transition-colors">
                 <MessageCircle className="w-5 h-5" />
               </a>
-              <a href="https://tiktok.com/@paulmaker.official" target="_blank" rel="noopener noreferrer" className="p-2 bg-secondary rounded-full hover:bg-primary transition-colors">
+              <a href={tiktok.startsWith('http') ? tiktok : `https://${tiktok}`} target="_blank" rel="noopener noreferrer" className="p-2 bg-secondary rounded-full hover:bg-primary transition-colors">
                 <Gamepad2 className="w-5 h-5" />
+              </a>
+              <a href={discord} target="_blank" rel="noopener noreferrer" className="p-2 bg-secondary rounded-full hover:bg-primary transition-colors">
+                <MessageSquareText className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -56,9 +72,13 @@ export default function Footer() {
               Contact
             </h4>
             <ul className="space-y-4 text-muted-foreground">
-              <li>WhatsApp: +62 822 5288 1812</li>
+              <li>WhatsApp: +{whatsapp}</li>
               <li>TikTok: @paulmaker.official</li>
-              <li>Discord: SOON</li>
+              <li>
+                <a href={discord} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                  Discord Server
+                </a>
+              </li>
             </ul>
           </div>
         </div>

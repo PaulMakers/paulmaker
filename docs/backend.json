@@ -37,6 +37,7 @@
         "pricePerHour": { "type": "number" },
         "whatsappNumber": { "type": "string" },
         "tiktokUrl": { "type": "string" },
+        "discordUrl": { "type": "string" },
         "metaTitle": { "type": "string" },
         "metaDescription": { "type": "string" }
       }

@@ -1,3 +1,4 @@
+
 "use client"
 
 import AdminLayout from "@/components/admin/AdminLayout"
@@ -7,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useState, useEffect } from "react"
-import { Save, Globe, MessageCircle, Info } from "lucide-react"
+import { Save, Globe, MessageCircle, Info, MessageSquareText } from "lucide-react"
 import { useFirestore, useDoc } from "@/firebase"
 import { doc, setDoc } from "firebase/firestore"
 import { useToast } from "@/hooks/use-toast"
@@ -22,7 +23,8 @@ export default function SettingsAdminPage() {
     pricePerHour: 10000,
     whatsappNumber: "6282252881812",
     tiktokUrl: "tiktok.com/@paulmaker.official",
-    metaTitle: "PaulMaker Stream | GTPS Livestream Promotion",
+    discordUrl: "https://discord.gg/ae7h2D5RB2",
+    metaTitle: "PaulMaker Stream | GTPS Livestream Promotion Service",
     metaDescription: "Professional GTPS Livestream Promotion Service."
   })
 
@@ -100,6 +102,14 @@ export default function SettingsAdminPage() {
                 <Input 
                   value={formData.tiktokUrl} 
                   onChange={e => setFormData({...formData, tiktokUrl: e.target.value})}
+                  className="bg-background border-border" 
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label>Discord Invite URL</Label>
+                <Input 
+                  value={formData.discordUrl} 
+                  onChange={e => setFormData({...formData, discordUrl: e.target.value})}
                   className="bg-background border-border" 
                 />
               </div>
