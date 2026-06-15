@@ -1,21 +1,26 @@
+
 "use client"
 
 import AdminLayout from "@/components/admin/AdminLayout"
 import { Card } from "@/components/ui/card"
-import { Calendar, Clock, MessageSquare, TrendingUp, AlertCircle, CheckCircle2 } from "lucide-react"
+import { Calendar, Clock, MessageSquare, TrendingUp, AlertCircle, CheckCircle2, MessageCircle, MessageSquareText, ExternalLink, Users } from "lucide-react"
 import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
   ResponsiveContainer,
   AreaChart,
-  Area 
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip 
 } from 'recharts'
+import { useFirestore, useDoc } from "@/firebase"
+import { doc } from "firebase/firestore"
 
 export default function AdminDashboard() {
+  const db = useFirestore()
+  const settingsRef = doc(db, "settings", "global")
+  const { data: settings } = useDoc(settingsRef)
+
   const stats = [
     { label: "Total Bookings", value: "254", icon: Calendar, color: "text-blue-500", trend: "+12%" },
     { label: "Pending Booking", value: "12", icon: AlertCircle, color: "text-yellow-500", trend: "-2%" },
@@ -84,44 +89,55 @@ export default function AdminDashboard() {
             </div>
           </Card>
 
-          {/* Quick Actions / Recent Activity */}
-          <Card className="gaming-card p-8 bg-card">
-            <h3 className="font-headline font-bold text-xl uppercase mb-8">Quick Actions</h3>
-            <div className="space-y-4">
-              <button className="w-full h-12 flex items-center justify-between px-4 rounded-lg bg-primary/10 border border-primary/30 text-primary hover:bg-primary hover:text-white transition-all group font-bold">
-                <span>NEW BOOKING</span>
-                <Calendar className="w-5 h-5" />
-              </button>
-              <button className="w-full h-12 flex items-center justify-between px-4 rounded-lg bg-secondary border border-border text-foreground hover:border-primary transition-all group font-bold">
-                <span>UPLOAD TESTIMONIAL</span>
-                <MessageSquare className="w-5 h-5" />
-              </button>
-              <button className="w-full h-12 flex items-center justify-between px-4 rounded-lg bg-secondary border border-border text-foreground hover:border-primary transition-all group font-bold">
-                <span>GENERATE AI PROMO</span>
-                <TrendingUp className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="mt-12">
-              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-6">Recent Activity</h4>
+          {/* Quick Actions & Social Presence */}
+          <div className="space-y-6">
+            <Card className="gaming-card p-8 bg-card">
+              <h3 className="font-headline font-bold text-xl uppercase mb-8">Quick Actions</h3>
               <div className="space-y-4">
-                <div className="flex gap-4 items-start">
-                  <div className="w-2 h-2 rounded-full bg-green-500 mt-1.5 shrink-0"></div>
-                  <div>
-                    <p className="text-sm font-bold">New Booking: MafiaPS</p>
-                    <p className="text-xs text-muted-foreground">2 minutes ago</p>
-                  </div>
-                </div>
-                <div className="flex gap-4 items-start">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
-                  <div>
-                    <p className="text-sm font-bold">Status Updated: DragonPS</p>
-                    <p className="text-xs text-muted-foreground">1 hour ago</p>
-                  </div>
-                </div>
+                <button className="w-full h-12 flex items-center justify-between px-4 rounded-lg bg-primary/10 border border-primary/30 text-primary hover:bg-primary hover:text-white transition-all group font-bold">
+                  <span>NEW BOOKING</span>
+                  <Calendar className="w-5 h-5" />
+                </button>
+                <button className="w-full h-12 flex items-center justify-between px-4 rounded-lg bg-secondary border border-border text-foreground hover:border-primary transition-all group font-bold">
+                  <span>UPLOAD TESTIMONIAL</span>
+                  <MessageSquare className="w-5 h-5" />
+                </button>
               </div>
-            </div>
-          </Card>
+            </Card>
+
+            <Card className="gaming-card p-8 bg-card border-primary/20">
+              <h3 className="font-headline font-bold text-sm uppercase tracking-widest mb-6 flex items-center gap-2">
+                <Users className="w-4 h-4 text-primary" />
+                Social Presence
+              </h3>
+              <div className="space-y-4">
+                <a 
+                  href={`https://wa.me/${settings?.whatsappNumber || "6282252881812"}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border hover:border-green-500 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <MessageCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-sm font-bold">WhatsApp Channel</span>
+                  </div>
+                  <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
+                <a 
+                  href={settings?.discordUrl || "https://discord.gg/ae7h2D5RB2"} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border hover:border-blue-500 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <MessageSquareText className="w-5 h-5 text-blue-500" />
+                    <span className="text-sm font-bold">Discord Server</span>
+                  </div>
+                  <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
     </AdminLayout>

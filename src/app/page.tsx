@@ -1,12 +1,24 @@
+
+"use client"
+
 import Navbar from "@/components/layout/Navbar"
 import Hero from "@/components/home/Hero"
 import Stats from "@/components/home/Stats"
 import Footer from "@/components/layout/Footer"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowRight, CheckCircle2, ShieldCheck, Zap } from "lucide-react"
+import { ArrowRight, CheckCircle2, ShieldCheck, Zap, MessageCircle, MessageSquareText, Users, Crown } from "lucide-react"
+import { useFirestore, useDoc } from "@/firebase"
+import { doc } from "firebase/firestore"
 
 export default function Home() {
+  const db = useFirestore()
+  const settingsRef = doc(db, "settings", "global")
+  const { data: settings } = useDoc(settingsRef)
+
+  const whatsapp = settings?.whatsappNumber || "6282252881812"
+  const discord = settings?.discordUrl || "https://discord.gg/ae7h2D5RB2"
+
   return (
     <div className="flex flex-col min-h-screen bg-grid">
       <Navbar />
@@ -78,20 +90,33 @@ export default function Home() {
         <section className="py-24 relative overflow-hidden">
           <div className="absolute inset-0 bg-primary opacity-5"></div>
           <div className="container mx-auto px-4 relative z-10">
-            <div className="bg-card border border-border rounded-3xl p-12 text-center max-w-4xl mx-auto shadow-2xl">
+            <div className="bg-card border border-border rounded-3xl p-12 text-center max-w-5xl mx-auto shadow-2xl">
               <h2 className="font-headline font-bold text-4xl mb-6 uppercase">SIAP MENINGKATKAN SERVER ANDA?</h2>
               <p className="text-xl text-muted-foreground mb-10">Hanya Rp10.000 per jam. Booking sekarang sebelum jadwal penuh!</p>
-              <div className="flex flex-col sm:flex-row justify-center gap-6">
-                <Link href="/schedule#book">
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-bold h-14 px-10 text-lg w-full sm:w-auto">
-                    BOOK LIVESTREAM NOW
-                  </Button>
-                </Link>
-                <a href="https://whatsapp.com/channel/0029VbCIGLo8qIzzpS3UQf37" target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" variant="outline" className="h-14 px-10 text-lg w-full sm:w-auto">
-                    JOIN WA CHANNEL
-                  </Button>
-                </a>
+              
+              <div className="flex flex-col items-center gap-8">
+                <div className="flex flex-col sm:flex-row justify-center gap-6 w-full">
+                  <Link href="/schedule#book" className="w-full sm:w-auto">
+                    <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-bold h-14 px-10 text-lg w-full">
+                      BOOK LIVESTREAM NOW
+                    </Button>
+                  </Link>
+                </div>
+                
+                <div className="flex flex-wrap justify-center gap-4">
+                  <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="h-12 px-6 border-green-500/30 hover:bg-green-500/10 text-green-500 flex gap-2 font-bold">
+                      <MessageCircle className="w-5 h-5" />
+                      WHATSAPP CHANNEL
+                    </Button>
+                  </a>
+                  <a href={discord} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="h-12 px-6 border-blue-500/30 hover:bg-blue-500/10 text-blue-500 flex gap-2 font-bold">
+                      <MessageSquareText className="w-5 h-5" />
+                      DISCORD SERVER
+                    </Button>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -101,5 +126,3 @@ export default function Home() {
     </div>
   )
 }
-
-import { Crown, Users } from "lucide-react"

@@ -1,8 +1,20 @@
+
+"use client"
+
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Calendar, ArrowRight, Star, Gamepad2, Users } from "lucide-react"
+import { Calendar, ArrowRight, Star, MessageCircle, MessageSquareText } from "lucide-react"
+import { useFirestore, useDoc } from "@/firebase"
+import { doc } from "firebase/firestore"
 
 export default function Hero() {
+  const db = useFirestore()
+  const settingsRef = doc(db, "settings", "global")
+  const { data: settings } = useDoc(settingsRef)
+
+  const whatsapp = settings?.whatsappNumber || "6282252881812"
+  const discord = settings?.discordUrl || "https://discord.gg/ae7h2D5RB2"
+
   return (
     <section className="relative pt-32 pb-20 overflow-hidden">
       {/* Background Effects */}
@@ -26,19 +38,33 @@ export default function Hero() {
             <span className="text-foreground font-semibold">Rp10.000 / Hour</span> to boost your server visibility.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
-            <Link href="/schedule">
-              <Button size="lg" className="h-14 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-lg group">
-                VIEW SCHEDULE
-                <Calendar className="ml-2 w-5 h-5 group-hover:scale-110 transition-transform" />
-              </Button>
-            </Link>
-            <Link href="/schedule#book">
-              <Button size="lg" variant="outline" className="h-14 px-8 border-primary/30 hover:bg-primary/10 font-bold text-lg">
-                BOOK NOW
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
+          <div className="flex flex-col items-center gap-6 mb-16 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/schedule">
+                <Button size="lg" className="h-14 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-lg group">
+                  VIEW SCHEDULE
+                  <Calendar className="ml-2 w-5 h-5 group-hover:scale-110 transition-transform" />
+                </Button>
+              </Link>
+              <Link href="/schedule#book">
+                <Button size="lg" variant="outline" className="h-14 px-8 border-primary/30 hover:bg-primary/10 font-bold text-lg">
+                  BOOK NOW
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="flex gap-4">
+              <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-bold text-green-500 hover:text-green-400 transition-colors">
+                <MessageCircle className="w-4 h-4" />
+                WhatsApp Channel
+              </a>
+              <span className="text-muted-foreground/30">|</span>
+              <a href={discord} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-400 transition-colors">
+                <MessageSquareText className="w-4 h-4" />
+                Discord Server
+              </a>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 pt-12 border-t border-border animate-in fade-in slide-in-from-bottom-8 duration-700 delay-400">
