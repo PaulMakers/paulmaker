@@ -1,15 +1,29 @@
 import Link from "next/link"
 import { Crown, MessageCircle, Gamepad2, Info, Instagram, Twitter } from "lucide-react"
+import Image from "next/image"
+import { PlaceHolderImages } from "@/lib/placeholder-images"
 
 export default function Footer() {
+  const logo = PlaceHolderImages.find(img => img.id === "logo")
+
   return (
     <footer className="bg-card border-t border-border pt-16 pb-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-6">
-              <div className="bg-primary p-2 rounded text-white font-bold">PM</div>
-              <span className="font-headline font-bold text-2xl">PAULMAKER</span>
+              <div className="relative w-10 h-10 overflow-hidden rounded bg-card border border-border">
+                {logo && (
+                  <Image 
+                    src={logo.imageUrl} 
+                    alt="PaulMaker Logo" 
+                    fill 
+                    className="object-cover"
+                    data-ai-hint={logo.imageHint}
+                  />
+                )}
+              </div>
+              <span className="font-headline font-bold text-2xl uppercase tracking-tight">PAULMAKER</span>
             </Link>
             <p className="text-muted-foreground max-w-sm mb-8">
               Professional GTPS Livestream Promotion Service. Kami membantu server Anda mendapatkan exposure maksimal dengan livestream berkualitas tinggi.
@@ -25,9 +39,9 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-headline font-bold mb-6 flex items-center gap-2">
+            <h4 className="font-headline font-bold mb-6 flex items-center gap-2 uppercase">
               <Info className="w-4 h-4 text-primary" />
-              QUICK LINKS
+              Quick Links
             </h4>
             <ul className="space-y-4">
               <li><Link href="/schedule" className="text-muted-foreground hover:text-primary transition-colors">Livestream Schedule</Link></li>
@@ -37,9 +51,9 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-headline font-bold mb-6 flex items-center gap-2">
+            <h4 className="font-headline font-bold mb-6 flex items-center gap-2 uppercase">
               <MessageCircle className="w-4 h-4 text-primary" />
-              CONTACT
+              Contact
             </h4>
             <ul className="space-y-4 text-muted-foreground">
               <li>WhatsApp: +62 822 5288 1812</li>

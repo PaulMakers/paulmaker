@@ -6,10 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Crown, Calendar, MessageSquare, ShieldCheck, Menu, X } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
+import { PlaceHolderImages } from "@/lib/placeholder-images"
 
 export default function Navbar() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
+  const logo = PlaceHolderImages.find(img => img.id === "logo")
 
   const navLinks = [
     { name: "Home", href: "/", icon: Crown },
@@ -24,11 +27,19 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-2 group">
             <div className="relative">
               <div className="absolute inset-0 bg-primary/20 blur-lg rounded-full group-hover:bg-primary/40 transition-all"></div>
-              <div className="relative bg-primary p-2 rounded-lg text-white font-bold text-xl flex items-center justify-center">
-                PM
+              <div className="relative w-10 h-10 overflow-hidden rounded-lg border border-primary/20 bg-card flex items-center justify-center">
+                {logo && (
+                  <Image 
+                    src={logo.imageUrl} 
+                    alt="PaulMaker Logo" 
+                    fill 
+                    className="object-cover"
+                    data-ai-hint={logo.imageHint}
+                  />
+                )}
               </div>
             </div>
-            <span className="font-headline font-bold text-xl tracking-tight hidden sm:inline-block">
+            <span className="font-headline font-bold text-xl tracking-tight hidden sm:inline-block uppercase">
               PAULMAKER <span className="text-primary">STREAM</span>
             </span>
           </Link>

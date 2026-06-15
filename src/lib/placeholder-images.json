@@ -1,6 +1,12 @@
 {
   "placeholderImages": [
     {
+      "id": "logo",
+      "description": "PaulMaker Official Logo",
+      "imageUrl": "https://i.ibb.co.com/MxqSy3JY/Paul-Maker-Profile-Picture.png",
+      "imageHint": "brand logo"
+    },
+    {
       "id": "hero",
       "description": "Professional Gaming Background",
       "imageUrl": "https://picsum.photos/seed/paulmaker1/1920/1080",

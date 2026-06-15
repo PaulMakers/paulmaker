@@ -4,9 +4,12 @@ import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, S
 import { LayoutDashboard, Calendar, MessageSquare, Settings, LogOut, Crown, ShieldCheck, User } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import Image from "next/image"
+import { PlaceHolderImages } from "@/lib/placeholder-images"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const logo = PlaceHolderImages.find(img => img.id === "logo")
 
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, href: "/admin" },
@@ -21,8 +24,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <Sidebar className="border-r border-border bg-card">
           <SidebarHeader className="p-6">
             <Link href="/" className="flex items-center gap-3">
-              <div className="bg-primary p-2 rounded text-white font-bold text-sm">PM</div>
-              <span className="font-headline font-bold text-lg tracking-tight">PAULMAKER</span>
+              <div className="relative w-10 h-10 overflow-hidden rounded bg-card border border-border">
+                {logo && (
+                  <Image 
+                    src={logo.imageUrl} 
+                    alt="PaulMaker Logo" 
+                    fill 
+                    className="object-cover"
+                    data-ai-hint={logo.imageHint}
+                  />
+                )}
+              </div>
+              <span className="font-headline font-bold text-lg tracking-tight uppercase">PAULMAKER</span>
             </Link>
           </SidebarHeader>
           
