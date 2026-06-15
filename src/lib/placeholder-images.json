@@ -1,3 +1,22 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "Professional Gaming Background",
+      "imageUrl": "https://picsum.photos/seed/paulmaker1/1920/1080",
+      "imageHint": "gaming background"
+    },
+    {
+      "id": "testimonial1",
+      "description": "Testimonial Server Result",
+      "imageUrl": "https://picsum.photos/seed/gtps1/600/400",
+      "imageHint": "growtopia screenshot"
+    },
+    {
+      "id": "testimonial2",
+      "description": "Testimonial Server Result",
+      "imageUrl": "https://picsum.photos/seed/gtps2/600/400",
+      "imageHint": "gaming desktop"
+    }
+  ]
 }

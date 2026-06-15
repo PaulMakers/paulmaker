@@ -1,0 +1,87 @@
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card } from "@/components/ui/card"
+import { ShieldCheck, Lock, User, ArrowLeft } from "lucide-react"
+import Link from "next/link"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+
+export default function AdminLoginPage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    // Simulate login for demonstration
+    setTimeout(() => {
+      router.push("/admin")
+    }, 1000)
+  }
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden bg-grid">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 blur-[150px] rounded-full"></div>
+      
+      <div className="max-w-md w-full relative z-10">
+        <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8">
+          <ArrowLeft className="w-4 h-4" />
+          Kembali ke Beranda
+        </Link>
+        
+        <Card className="gaming-card p-8 border-border bg-card/80 backdrop-blur-xl">
+          <div className="text-center mb-10">
+            <div className="w-20 h-20 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-primary/30">
+              <ShieldCheck className="w-10 h-10 text-primary" />
+            </div>
+            <h1 className="font-headline font-bold text-3xl mb-2">ADMIN PANEL</h1>
+            <p className="text-muted-foreground">Otentikasi diperlukan untuk mengakses dashboard.</p>
+          </div>
+          
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-2">
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input 
+                  type="email" 
+                  placeholder="Email Administrator" 
+                  className="pl-10 h-12 bg-background border-border focus:border-primary/50"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input 
+                  type="password" 
+                  placeholder="Password" 
+                  className="pl-10 h-12 bg-background border-border focus:border-primary/50"
+                  required
+                />
+              </div>
+            </div>
+            
+            <Button 
+              type="submit" 
+              className="w-full h-12 bg-primary hover:bg-primary/90 font-bold text-lg"
+              disabled={loading}
+            >
+              {loading ? "AUTHENTICATING..." : "LOGIN TO DASHBOARD"}
+            </Button>
+          </form>
+          
+          <div className="mt-8 pt-6 border-t border-border text-center">
+            <p className="text-xs text-muted-foreground">
+              PAULMAKER STREAMING SERVICE v2.0 <br />
+              Secure Admin Environment
+            </p>
+          </div>
+        </Card>
+      </div>
+    </div>
+  )
+}
