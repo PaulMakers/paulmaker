@@ -16,6 +16,7 @@ import { collection, query, orderBy, where } from "firebase/firestore"
 
 export default function SchedulePage() {
   const [isBookingOpen, setIsBookingOpen] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<string>(format(new Date(), "yyyy-MM-dd"))
   const db = useFirestore()
   
   // Generate next 7 days dates
@@ -52,12 +53,18 @@ export default function SchedulePage() {
       
       return {
         date,
+        dateStr,
         bookedHours,
         isFull: bookedHours >= 12,
         isWarning: bookedHours >= 9 && bookedHours < 12
       }
     })
   }, [dates, allBookings])
+
+  const handleBookDay = (dateStr: string) => {
+    setSelectedDate(dateStr)
+    setIsBookingOpen(true)
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -116,7 +123,7 @@ export default function SchedulePage() {
                       
                       <Button 
                         disabled={day.isFull || isLoading}
-                        onClick={() => setIsBookingOpen(true)}
+                        onClick={() => handleBookDay(day.dateStr)}
                         variant={day.isFull ? "ghost" : "outline"} 
                         className="w-full mt-6 group font-bold"
                       >
@@ -164,7 +171,7 @@ export default function SchedulePage() {
                   </div>
 
                   <Button 
-                    onClick={() => setIsBookingOpen(true)}
+                    onClick={() => handleBookDay(format(new Date(), "yyyy-MM-dd"))}
                     className="w-full mt-8 bg-primary hover:bg-primary/90 font-bold h-12 shadow-lg shadow-primary/20"
                   >
                     BOOK NOW
@@ -201,7 +208,11 @@ export default function SchedulePage() {
         </div>
       </main>
       
-      <BookingForm isOpen={isBookingOpen} onOpenChange={setIsBookingOpen} />
+      <BookingForm 
+        isOpen={isBookingOpen} 
+        onOpenChange={setIsBookingOpen} 
+        initialDate={selectedDate}
+      />
       
       <Footer />
     </div>

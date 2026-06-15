@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
@@ -5,16 +6,25 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { format } from "date-fns"
-import { CalendarIcon, Clock, Gamepad2, User } from "lucide-react"
+import { CalendarIcon, Clock, Gamepad2 } from "lucide-react"
+import { useFirestore, useDoc } from "@/firebase"
+import { doc } from "firebase/firestore"
 
 interface BookingFormProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  initialDate?: string
 }
 
-export default function BookingForm({ isOpen, onOpenChange }: BookingFormProps) {
+export default function BookingForm({ isOpen, onOpenChange, initialDate }: BookingFormProps) {
+  const db = useFirestore()
+  const settingsRef = doc(db, "settings", "global")
+  const { data: settings } = useDoc(settingsRef)
+  
+  const whatsapp = settings?.whatsappNumber || "6282252881812"
+
   const [formData, setFormData] = useState({
     serverName: "",
     date: format(new Date(), "yyyy-MM-dd"),
@@ -22,6 +32,13 @@ export default function BookingForm({ isOpen, onOpenChange }: BookingFormProps) 
     duration: "2",
     notes: ""
   })
+
+  // Update date when initialDate changes or when dialog opens
+  useEffect(() => {
+    if (isOpen && initialDate) {
+      setFormData(prev => ({ ...prev, date: initialDate }))
+    }
+  }, [isOpen, initialDate])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,7 +58,7 @@ Mohon informasi ketersediaannya.
 Terima kasih.`
 
     const encodedMessage = encodeURIComponent(message)
-    window.open(`https://wa.me/6282252881812?text=${encodedMessage}`, "_blank")
+    window.open(`https://wa.me/${whatsapp}?text=${encodedMessage}`, "_blank")
     onOpenChange(false)
   }
 
