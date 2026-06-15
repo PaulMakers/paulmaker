@@ -27,18 +27,19 @@ export default function BookingForm({ isOpen, onOpenChange, initialDate }: Booki
 
   const [formData, setFormData] = useState({
     serverName: "",
-    date: format(new Date(), "yyyy-MM-dd"),
+    date: "",
     startTime: "08:00",
     duration: "2",
     notes: ""
   })
 
-  // Update date when initialDate changes or when dialog opens
+  // Set initial date only once on client side
   useEffect(() => {
-    if (isOpen && initialDate) {
-      setFormData(prev => ({ ...prev, date: initialDate }))
-    }
-  }, [isOpen, initialDate])
+    setFormData(prev => ({ 
+      ...prev, 
+      date: initialDate || format(new Date(), "yyyy-MM-dd") 
+    }))
+  }, [initialDate])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

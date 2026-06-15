@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Clock, Plus, Info, AlertTriangle, CheckCircle2 } from "lucide-react"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import BookingForm from "@/components/booking/BookingForm"
 import { format, addDays, startOfDay } from "date-fns"
 import { id } from "date-fns/locale"
@@ -16,9 +16,16 @@ import { collection, query, orderBy, where } from "firebase/firestore"
 
 export default function SchedulePage() {
   const [isBookingOpen, setIsBookingOpen] = useState(false)
-  const [selectedDate, setSelectedDate] = useState<string>(format(new Date(), "yyyy-MM-dd"))
+  const [selectedDate, setSelectedDate] = useState<string>("")
+  const [isMounted, setIsMounted] = useState(false)
   const db = useFirestore()
   
+  // Handle hydration
+  useEffect(() => {
+    setIsMounted(true)
+    setSelectedDate(format(new Date(), "yyyy-MM-dd"))
+  }, [])
+
   // Generate next 7 days dates
   const dates = useMemo(() => {
     return Array.from({ length: 7 }, (_, i) => addDays(startOfDay(new Date()), i))
@@ -40,7 +47,7 @@ export default function SchedulePage() {
   const { data: allBookings, isLoading } = useCollection(bookingsQuery)
 
   // Fetch today's bookings specifically for the sidebar
-  const todayStr = format(new Date(), "yyyy-MM-dd")
+  const todayStr = isMounted ? format(new Date(), "yyyy-MM-dd") : ""
   const todayBookings = allBookings?.filter(b => b.date === todayStr) || []
 
   const nextSevenDays = useMemo(() => {
@@ -65,6 +72,8 @@ export default function SchedulePage() {
     setSelectedDate(dateStr)
     setIsBookingOpen(true)
   }
+
+  if (!isMounted) return null
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -122,7 +131,7 @@ export default function SchedulePage() {
                       </div>
                       
                       <Button 
-                        disabled={day.isFull || isLoading}
+                        disabled={day.isFull}
                         onClick={() => handleBookDay(day.dateStr)}
                         variant={day.isFull ? "ghost" : "outline"} 
                         className="w-full mt-6 group font-bold"
