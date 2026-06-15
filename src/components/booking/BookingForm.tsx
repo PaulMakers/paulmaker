@@ -64,7 +64,7 @@ Terima kasih.`
               </Label>
               <Input 
                 id="serverName" 
-                placeholder="Contoh: MafiaPS" 
+                placeholder="Contoh: GTPS" 
                 required 
                 value={formData.serverName}
                 onChange={(e) => setFormData({...formData, serverName: e.target.value})}
