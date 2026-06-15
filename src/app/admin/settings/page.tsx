@@ -6,11 +6,54 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { useState } from "react"
-import { Save, Globe, MessageCircle, Gamepad2, Info } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Save, Globe, MessageCircle, Info } from "lucide-react"
+import { useFirestore, useDoc } from "@/firebase"
+import { doc, setDoc } from "firebase/firestore"
+import { useToast } from "@/hooks/use-toast"
 
 export default function SettingsAdminPage() {
-  const [loading, setLoading] = useState(false)
+  const db = useFirestore()
+  const { toast } = useToast()
+  const settingsRef = doc(db, "settings", "global")
+  const { data: initialSettings, isLoading } = useDoc(settingsRef)
+  
+  const [formData, setFormData] = useState({
+    pricePerHour: 10000,
+    whatsappNumber: "6282252881812",
+    tiktokUrl: "tiktok.com/@paulmaker.official",
+    metaTitle: "PaulMaker Stream | GTPS Livestream Promotion",
+    metaDescription: "Professional GTPS Livestream Promotion Service."
+  })
+
+  useEffect(() => {
+    if (initialSettings) {
+      setFormData(prev => ({ ...prev, ...initialSettings }))
+    }
+  }, [initialSettings])
+
+  const [saving, setSaving] = useState(false)
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      await setDoc(settingsRef, formData, { merge: true })
+      toast({
+        title: "Pengaturan disimpan",
+        description: "Data konfigurasi global telah diperbarui.",
+      })
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        title: "Gagal menyimpan",
+        description: "Terjadi kesalahan saat menyimpan data.",
+      })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (isLoading) return <AdminLayout><div className="p-8">Memuat pengaturan...</div></AdminLayout>
 
   return (
     <AdminLayout>
@@ -25,16 +68,13 @@ export default function SettingsAdminPage() {
             
             <div className="space-y-4">
               <div className="grid gap-2">
-                <Label>Brand Name</Label>
-                <Input defaultValue="PAULMAKER STREAMING SERVICE" className="bg-background border-border" />
-              </div>
-              <div className="grid gap-2">
-                <Label>Tagline</Label>
-                <Input defaultValue="Professional GTPS Livestream Promotion Service" className="bg-background border-border" />
-              </div>
-              <div className="grid gap-2">
                 <Label>Price Per Hour (Rp)</Label>
-                <Input type="number" defaultValue="10000" className="bg-background border-border" />
+                <Input 
+                  type="number" 
+                  value={formData.pricePerHour} 
+                  onChange={e => setFormData({...formData, pricePerHour: Number(e.target.value)})}
+                  className="bg-background border-border" 
+                />
               </div>
             </div>
           </Card>
@@ -49,15 +89,19 @@ export default function SettingsAdminPage() {
             <div className="space-y-4">
               <div className="grid gap-2">
                 <Label>WhatsApp Number</Label>
-                <Input defaultValue="6282252881812" className="bg-background border-border" />
+                <Input 
+                  value={formData.whatsappNumber} 
+                  onChange={e => setFormData({...formData, whatsappNumber: e.target.value})}
+                  className="bg-background border-border" 
+                />
               </div>
               <div className="grid gap-2">
                 <Label>TikTok URL</Label>
-                <Input defaultValue="tiktok.com/@paulmaker.official" className="bg-background border-border" />
-              </div>
-              <div className="grid gap-2">
-                <Label>WhatsApp Channel URL</Label>
-                <Input defaultValue="https://whatsapp.com/channel/0029VbCIGLo8qIzzpS3UQf37" className="bg-background border-border" />
+                <Input 
+                  value={formData.tiktokUrl} 
+                  onChange={e => setFormData({...formData, tiktokUrl: e.target.value})}
+                  className="bg-background border-border" 
+                />
               </div>
             </div>
           </Card>
@@ -74,18 +118,19 @@ export default function SettingsAdminPage() {
             <div className="space-y-4">
               <div className="grid gap-2">
                 <Label>Meta Title</Label>
-                <Input defaultValue="PaulMaker Stream | GTPS Livestream Promotion" className="bg-background border-border" />
-              </div>
-              <div className="grid gap-2">
-                <Label>Meta Keywords</Label>
-                <Input defaultValue="GTPS, Growtopia, Livestream, Promo" className="bg-background border-border" />
+                <Input 
+                  value={formData.metaTitle} 
+                  onChange={e => setFormData({...formData, metaTitle: e.target.value})}
+                  className="bg-background border-border" 
+                />
               </div>
             </div>
             <div className="space-y-4">
               <div className="grid gap-2">
                 <Label>Meta Description</Label>
                 <Textarea 
-                  defaultValue="Professional GTPS Livestream Promotion Service. Boost your server visibility for only Rp10.000/Hour." 
+                  value={formData.metaDescription} 
+                  onChange={e => setFormData({...formData, metaDescription: e.target.value})}
                   className="bg-background border-border min-h-[100px]" 
                 />
               </div>
@@ -96,11 +141,11 @@ export default function SettingsAdminPage() {
         <div className="flex justify-end pt-4">
           <Button 
             className="bg-primary hover:bg-primary/90 font-bold h-12 px-10 text-lg flex gap-2"
-            onClick={() => setLoading(true)}
-            disabled={loading}
+            onClick={handleSave}
+            disabled={saving}
           >
             <Save className="w-5 h-5" />
-            {loading ? "SAVING..." : "SAVE CHANGES"}
+            {saving ? "SAVING..." : "SAVE CHANGES"}
           </Button>
         </div>
       </div>
