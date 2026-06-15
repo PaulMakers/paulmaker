@@ -1,0 +1,62 @@
+
+{
+  "entities": {
+    "Booking": {
+      "title": "Booking",
+      "description": "Data pesanan livestream dari client.",
+      "type": "object",
+      "properties": {
+        "serverName": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "startTime": { "type": "string" },
+        "duration": { "type": "number" },
+        "status": { "type": "string", "enum": ["Pending", "Proses", "Done", "Cancelled"] },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["serverName", "date", "startTime", "duration", "status"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Hasil promosi server yang telah selesai.",
+      "type": "object",
+      "properties": {
+        "serverName": { "type": "string" },
+        "duration": { "type": "string" },
+        "playersReached": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["serverName", "duration", "playersReached"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Konfigurasi global untuk website.",
+      "type": "object",
+      "properties": {
+        "pricePerHour": { "type": "number" },
+        "whatsappNumber": { "type": "string" },
+        "tiktokUrl": { "type": "string" },
+        "metaTitle": { "type": "string" },
+        "metaDescription": { "type": "string" }
+      }
+    }
+  },
+  "auth": {
+    "providers": ["google.com", "password"]
+  },
+  "firestore": {
+    "/bookings/{bookingId}": {
+      "schema": "#/entities/Booking",
+      "description": "Koleksi semua pesanan livestream."
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": "#/entities/Testimonial",
+      "description": "Koleksi hasil testimoni client."
+    },
+    "/settings/global": {
+      "schema": "#/entities/SiteSettings",
+      "description": "Dokumen tunggal untuk pengaturan situs."
+    }
+  }
+}

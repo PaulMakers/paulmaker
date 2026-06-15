@@ -1,6 +1,8 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
+import { FirebaseClientProvider } from "@/firebase";
 
 export const metadata: Metadata = {
   title: 'PaulMaker Stream | GTPS Livestream Promotion Service',
@@ -30,8 +32,10 @@ export default function RootLayout({
         <meta name="theme-color" content="#D90429" />
       </head>
       <body className="font-body antialiased min-h-screen">
-        {children}
-        <Toaster />
+        <FirebaseClientProvider>
+          {children}
+          <Toaster />
+        </FirebaseClientProvider>
       </body>
     </html>
   );
