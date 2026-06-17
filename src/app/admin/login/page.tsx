@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Button } from "@/components/ui/button"
@@ -31,11 +32,24 @@ export default function AdminLoginPage() {
       })
       router.push("/admin")
     } catch (error: any) {
+      let errorMessage = "Email atau password salah."
+      
+      if (error.code === 'auth/operation-not-allowed') {
+        errorMessage = "Metode login Email/Password belum diaktifkan di Firebase Console."
+      } else if (error.code === 'auth/user-not-found') {
+        errorMessage = "Akun tidak ditemukan."
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = "Password salah."
+      } else if (error.code === 'auth/invalid-credential') {
+        errorMessage = "Kredensial tidak valid. Periksa kembali email dan password Anda."
+      }
+
       toast({
         variant: "destructive",
         title: "Login Gagal",
-        description: "Email atau password salah. Pastikan akun sudah dibuat di Firebase Console.",
+        description: errorMessage,
       })
+      console.error("Login error:", error.code, error.message)
     } finally {
       setLoading(false)
     }
