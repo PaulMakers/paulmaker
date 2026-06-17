@@ -10,5 +10,7 @@ export const firebaseConfig = {
 
 // Fungsi pembantu untuk memvalidasi apakah config sudah lengkap
 export const isFirebaseConfigValid = () => {
-  return !!firebaseConfig.apiKey && !!firebaseConfig.projectId;
+  // Hanya mengecek apiKey dan projectId sebagai syarat minimal
+  return typeof firebaseConfig.apiKey === 'string' && firebaseConfig.apiKey.length > 0 && 
+         typeof firebaseConfig.projectId === 'string' && firebaseConfig.projectId.length > 0;
 };
