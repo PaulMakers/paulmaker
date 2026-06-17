@@ -7,18 +7,37 @@ import { ShieldCheck, Lock, User, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/firebase"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { useToast } from "@/hooks/use-toast"
 
 export default function AdminLoginPage() {
   const router = useRouter()
+  const auth = useAuth()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    // Simulate login for demonstration
-    setTimeout(() => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      toast({
+        title: "Login Berhasil",
+        description: "Selamat datang kembali di panel kontrol.",
+      })
       router.push("/admin")
-    }, 1000)
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Login Gagal",
+        description: "Email atau password salah.",
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -49,6 +68,8 @@ export default function AdminLoginPage() {
                   placeholder="Email Administrator" 
                   className="pl-10 h-12 bg-background border-border focus:border-primary/50"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
@@ -61,6 +82,8 @@ export default function AdminLoginPage() {
                   placeholder="Password" 
                   className="pl-10 h-12 bg-background border-border focus:border-primary/50"
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>

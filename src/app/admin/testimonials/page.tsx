@@ -5,15 +5,28 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-import { Search, Plus, Trash2, Image as ImageIcon, ExternalLink } from "lucide-react"
+import { Search, Plus, Trash2, Image as ImageIcon, ExternalLink, Loader2 } from "lucide-react"
 import { useState, useMemo } from "react"
 import { useCollection, useFirestore } from "@/firebase"
-import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore"
+import { collection, deleteDoc, doc, query, orderBy, addDoc, serverTimestamp } from "firebase/firestore"
 import Image from "next/image"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { useToast } from "@/hooks/use-toast"
 
 export default function AdminTestimonialsPage() {
   const db = useFirestore()
+  const { toast } = useToast()
   const [searchTerm, setSearchTerm] = useState("")
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  const [formData, setFormData] = useState({
+    serverName: "",
+    duration: "",
+    playersReached: "",
+    imageUrl: ""
+  })
 
   const testimonialsQuery = useMemo(() => {
     return query(collection(db, "testimonials"), orderBy("createdAt", "desc"))
@@ -27,7 +40,30 @@ export default function AdminTestimonialsPage() {
 
   const handleDelete = async (id: string) => {
     if (confirm("Apakah Anda yakin ingin menghapus testimoni ini?")) {
-      await deleteDoc(doc(db, "testimonials", id))
+      try {
+        await deleteDoc(doc(db, "testimonials", id))
+        toast({ title: "Terhapus", description: "Testimoni telah dihapus." })
+      } catch (e) {
+        toast({ variant: "destructive", title: "Gagal", description: "Terjadi kesalahan saat menghapus." })
+      }
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    try {
+      await addDoc(collection(db, "testimonials"), {
+        ...formData,
+        createdAt: serverTimestamp()
+      })
+      toast({ title: "Berhasil", description: "Testimoni baru telah ditambahkan." })
+      setIsModalOpen(false)
+      setFormData({ serverName: "", duration: "", playersReached: "", imageUrl: "" })
+    } catch (e) {
+      toast({ variant: "destructive", title: "Gagal", description: "Gagal menambahkan testimoni." })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -45,7 +81,10 @@ export default function AdminTestimonialsPage() {
             />
           </div>
           
-          <Button className="bg-primary hover:bg-primary/90 flex gap-2 font-bold">
+          <Button 
+            className="bg-primary hover:bg-primary/90 flex gap-2 font-bold"
+            onClick={() => setIsModalOpen(true)}
+          >
             <Plus className="w-4 h-4" />
             TAMBAH TESTIMONI
           </Button>
@@ -70,7 +109,7 @@ export default function AdminTestimonialsPage() {
               ) : filteredTestimonials?.map((item) => (
                 <TableRow key={item.id} className="border-border hover:bg-muted/20">
                   <TableCell>
-                    <div className="relative w-16 h-10 rounded overflow-hidden bg-muted">
+                    <div className="relative w-16 h-10 rounded overflow-hidden bg-muted border border-border">
                       {item.imageUrl ? (
                         <Image src={item.imageUrl} alt={item.serverName} fill className="object-cover" />
                       ) : (
@@ -102,6 +141,65 @@ export default function AdminTestimonialsPage() {
           </Table>
         </Card>
       </div>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="bg-card border-border">
+          <DialogHeader>
+            <DialogTitle>TAMBAH TESTIMONI BARU</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+            <div className="grid gap-2">
+              <Label>Nama Server</Label>
+              <Input 
+                required 
+                value={formData.serverName} 
+                onChange={e => setFormData({...formData, serverName: e.target.value})}
+                placeholder="Contoh: GTPS Private"
+                className="bg-background"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label>Durasi Stream (Teks)</Label>
+                <Input 
+                  required 
+                  value={formData.duration} 
+                  onChange={e => setFormData({...formData, duration: e.target.value})}
+                  placeholder="2 Jam"
+                  className="bg-background"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label>Total Player Reach</Label>
+                <Input 
+                  required 
+                  value={formData.playersReached} 
+                  onChange={e => setFormData({...formData, playersReached: e.target.value})}
+                  placeholder="500+"
+                  className="bg-background"
+                />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label>Image URL (Bukti Jernih)</Label>
+              <Input 
+                required 
+                value={formData.imageUrl} 
+                onChange={e => setFormData({...formData, imageUrl: e.target.value})}
+                placeholder="https://i.ibb.co/..."
+                className="bg-background"
+              />
+            </div>
+            <DialogFooter className="pt-6">
+              <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>BATAL</Button>
+              <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90 font-bold">
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                SIMPAN TESTIMONI
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   )
 }

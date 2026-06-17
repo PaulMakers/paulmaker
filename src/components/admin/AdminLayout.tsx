@@ -1,15 +1,42 @@
 "use client"
 
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar"
-import { LayoutDashboard, Calendar, MessageSquare, Settings, LogOut, Crown, ShieldCheck, User } from "lucide-react"
+import { LayoutDashboard, Calendar, MessageSquare, Settings, LogOut, ShieldCheck, User, Loader2 } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
+import { useUser, useAuth } from "@/firebase"
+import { useEffect } from "react"
+import { signOut } from "firebase/auth"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const auth = useAuth()
+  const { user, isLoading } = useUser()
   const logo = PlaceHolderImages.find(img => img.id === "logo")
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push("/admin/login")
+    }
+  }, [user, isLoading, router])
+
+  const handleLogout = async () => {
+    await signOut(auth)
+    router.push("/admin/login")
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      </div>
+    )
+  }
+
+  if (!user) return null
 
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, href: "/admin" },
@@ -68,16 +95,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <User className="w-5 h-5" />
               </div>
               <div className="flex-1 overflow-hidden">
-                <p className="text-sm font-bold truncate">PaulMaker Admin</p>
-                <p className="text-xs text-muted-foreground truncate">admin@paulmaker.stream</p>
+                <p className="text-sm font-bold truncate">Admin</p>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
               </div>
             </div>
-            <Link href="/admin/login">
-              <button className="flex items-center gap-3 w-full p-2 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
-                <LogOut className="w-5 h-5" />
-                Logout Session
-              </button>
-            </Link>
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-3 w-full p-2 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+            >
+              <LogOut className="w-5 h-5" />
+              Logout Session
+            </button>
           </SidebarFooter>
         </Sidebar>
 
