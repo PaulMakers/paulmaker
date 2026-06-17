@@ -5,11 +5,12 @@ import Navbar from "@/components/layout/Navbar"
 import Footer from "@/components/layout/Footer"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Clock, Gamepad2, ExternalLink, ImageIcon, RefreshCw } from "lucide-react"
+import { Clock, Gamepad2, ImageIcon, RefreshCw, Maximize2, X } from "lucide-react"
 import Image from "next/image"
 import { useFirestore, useDoc, useCollection } from "@/firebase"
 import { collection, query, orderBy, doc } from "firebase/firestore"
 import { useMemo, useState, useEffect } from "react"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 
 interface TestimonialData {
   id: string
@@ -26,6 +27,7 @@ export default function TestimonialsPage() {
   
   const [sheetData, setSheetData] = useState<TestimonialData[]>([])
   const [isSheetLoading, setIsSheetLoading] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   // Fallback to Firestore
   const testimonialsQuery = useMemo(() => {
@@ -49,7 +51,7 @@ export default function TestimonialsPage() {
           .slice(1) // Skip header
           .filter(row => row.trim().length > 0)
           .map((row, index) => {
-            // Handle basic comma separation (improve if names have commas)
+            // Handle basic comma separation
             const parts = row.split(",").map(cell => cell.trim().replace(/^"|"$/g, ''))
             const [serverName, duration, playersReached, imageUrl] = parts
             
@@ -142,12 +144,15 @@ export default function TestimonialsPage() {
                         </div>
                       </div>
                       
-                      <p className="text-muted-foreground text-sm mb-6">
+                      <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
                         Kampanye promosi livestream intensif yang berhasil meningkatkan jangkauan penonton secara signifikan di {item.serverName}.
                       </p>
                       
-                      <button className="flex items-center gap-2 text-primary font-bold text-sm hover:underline">
-                        Lihat Detail Promo <ExternalLink className="w-4 h-4" />
+                      <button 
+                        onClick={() => item.imageUrl && setSelectedImage(item.imageUrl)}
+                        className="flex items-center gap-2 text-primary font-bold text-sm hover:underline group/btn"
+                      >
+                        Lihat Gambar <Maximize2 className="w-4 h-4 transition-transform group-hover/btn:scale-110" />
                       </button>
                     </div>
                   </Card>
@@ -167,6 +172,29 @@ export default function TestimonialsPage() {
           </div>
         </div>
       </main>
+
+      {/* Full-screen Image Viewer Modal */}
+      <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 border-none bg-black/90 flex items-center justify-center overflow-hidden">
+          <DialogTitle className="sr-only">Bukti Livestream</DialogTitle>
+          <button 
+            onClick={() => setSelectedImage(null)}
+            className="absolute top-4 right-4 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          {selectedImage && (
+            <div className="relative w-full h-full flex items-center justify-center p-4">
+              <img 
+                src={selectedImage} 
+                alt="Full Screen Evidence" 
+                className="max-w-full max-h-[90vh] object-contain shadow-2xl rounded-lg"
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   )
