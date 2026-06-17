@@ -125,7 +125,7 @@ export default function TestimonialsPage() {
                       <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-60"></div>
                       <div className="absolute top-4 right-4">
                         <Badge className="bg-primary hover:bg-primary font-bold">
-                          +{item.playersReached} PLAYERS
+                          +{item.playersReached} VIEWS
                         </Badge>
                       </div>
                     </div>
@@ -143,7 +143,7 @@ export default function TestimonialsPage() {
                       </div>
                       
                       <p className="text-muted-foreground text-sm mb-6">
-                        Kampanye promosi livestream intensif yang berhasil meningkatkan jumlah pemain aktif secara signifikan di {item.serverName}.
+                        Kampanye promosi livestream intensif yang berhasil meningkatkan jangkauan penonton secara signifikan di {item.serverName}.
                       </p>
                       
                       <button className="flex items-center gap-2 text-primary font-bold text-sm hover:underline">

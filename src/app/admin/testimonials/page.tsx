@@ -1,3 +1,4 @@
+
 "use client"
 
 import AdminLayout from "@/components/admin/AdminLayout"
@@ -97,7 +98,7 @@ export default function AdminTestimonialsPage() {
                 <TableHead className="font-bold">PREVIEW</TableHead>
                 <TableHead className="font-bold">SERVER NAME</TableHead>
                 <TableHead className="font-bold">DURATION</TableHead>
-                <TableHead className="font-bold">REACH</TableHead>
+                <TableHead className="font-bold">VIEWS</TableHead>
                 <TableHead className="text-right font-bold">ACTIONS</TableHead>
               </TableRow>
             </TableHeader>
@@ -119,7 +120,7 @@ export default function AdminTestimonialsPage() {
                   </TableCell>
                   <TableCell className="font-bold">{item.serverName}</TableCell>
                   <TableCell>{item.duration}</TableCell>
-                  <TableCell className="text-primary font-bold">{item.playersReached}</TableCell>
+                  <TableCell className="text-primary font-bold">+{item.playersReached} Views</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
@@ -170,7 +171,7 @@ export default function AdminTestimonialsPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label>Total Player Reach</Label>
+                <Label>Total Views</Label>
                 <Input 
                   required 
                   value={formData.playersReached} 
