@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useState, useEffect } from "react"
-import { Save, Globe, MessageCircle, Info, MessageSquareText } from "lucide-react"
+import { Save, Globe, MessageCircle, Info, Table } from "lucide-react"
 import { useFirestore, useDoc } from "@/firebase"
 import { doc, setDoc } from "firebase/firestore"
 import { useToast } from "@/hooks/use-toast"
@@ -25,7 +25,8 @@ export default function SettingsAdminPage() {
     tiktokUrl: "tiktok.com/@paulmaker.official",
     discordUrl: "https://discord.gg/ae7h2D5RB2",
     metaTitle: "PaulMaker Stream | GTPS Livestream Promotion Service",
-    metaDescription: "Professional GTPS Livestream Promotion Service."
+    metaDescription: "Professional GTPS Livestream Promotion Service.",
+    googleSheetTestimonialsUrl: ""
   })
 
   useEffect(() => {
@@ -81,13 +82,36 @@ export default function SettingsAdminPage() {
             </div>
           </Card>
 
-          {/* Social Links */}
+          {/* Google Sheets Integration */}
           <Card className="gaming-card p-8 space-y-6">
             <h3 className="font-headline font-bold text-xl flex items-center gap-2">
-              <MessageCircle className="text-primary w-5 h-5" />
-              SOCIAL & CONTACTS
+              <Table className="text-primary w-5 h-5" />
+              TESTIMONIAL SYNC
             </h3>
             
+            <div className="space-y-4">
+              <div className="grid gap-2">
+                <Label>Google Sheets CSV URL</Label>
+                <Input 
+                  placeholder="Paste link Publish to web (CSV) di sini"
+                  value={formData.googleSheetTestimonialsUrl} 
+                  onChange={e => setFormData({...formData, googleSheetTestimonialsUrl: e.target.value})}
+                  className="bg-background border-border text-xs" 
+                />
+                <p className="text-[10px] text-muted-foreground">Format kolom: Nama Server, Durasi, Total Reach, Link Foto</p>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* Social Links */}
+        <Card className="gaming-card p-8 space-y-6">
+          <h3 className="font-headline font-bold text-xl flex items-center gap-2">
+            <MessageCircle className="text-primary w-5 h-5" />
+            SOCIAL & CONTACTS
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-4">
               <div className="grid gap-2">
                 <Label>WhatsApp Number</Label>
@@ -105,6 +129,8 @@ export default function SettingsAdminPage() {
                   className="bg-background border-border" 
                 />
               </div>
+            </div>
+            <div className="space-y-4">
               <div className="grid gap-2">
                 <Label>Discord Invite URL</Label>
                 <Input 
@@ -114,8 +140,8 @@ export default function SettingsAdminPage() {
                 />
               </div>
             </div>
-          </Card>
-        </div>
+          </div>
+        </Card>
 
         {/* SEO & Other */}
         <Card className="gaming-card p-8 space-y-6">
