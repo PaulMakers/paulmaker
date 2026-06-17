@@ -8,9 +8,6 @@ export const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-// Fungsi pembantu untuk memvalidasi apakah config sudah lengkap
 export const isFirebaseConfigValid = () => {
-  // Hanya mengecek apiKey dan projectId sebagai syarat minimal
-  return typeof firebaseConfig.apiKey === 'string' && firebaseConfig.apiKey.length > 0 && 
-         typeof firebaseConfig.projectId === 'string' && firebaseConfig.projectId.length > 0;
+  return !!(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId);
 };
