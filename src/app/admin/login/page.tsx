@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
       toast({
         variant: "destructive",
         title: "Login Gagal",
-        description: "Email atau password salah.",
+        description: "Email atau password salah. Pastikan akun sudah dibuat di Firebase Console.",
       })
     } finally {
       setLoading(false)
@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
             <div className="w-20 h-20 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-primary/30">
               <ShieldCheck className="w-10 h-10 text-primary" />
             </div>
-            <h1 className="font-headline font-bold text-3xl mb-2">ADMIN PANEL</h1>
+            <h1 className="font-headline font-bold text-3xl mb-2 tracking-tighter">ADMIN PANEL</h1>
             <p className="text-muted-foreground">Otentikasi diperlukan untuk mengakses dashboard.</p>
           </div>
           
@@ -98,7 +98,7 @@ export default function AdminLoginPage() {
             
             <Button 
               type="submit" 
-              className="w-full h-12 bg-primary hover:bg-primary/90 font-bold text-lg"
+              className="w-full h-12 bg-primary hover:bg-primary/90 font-bold text-lg shadow-lg shadow-primary/20"
               disabled={loading}
             >
               {loading ? "AUTHENTICATING..." : "LOGIN TO DASHBOARD"}
@@ -106,9 +106,9 @@ export default function AdminLoginPage() {
           </form>
           
           <div className="mt-8 pt-6 border-t border-border text-center">
-            <p className="text-xs text-muted-foreground">
-              PAULMAKER STREAMING SERVICE v2.0 <br />
-              Secure Admin Environment
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest leading-relaxed">
+              PaulMaker Streaming Service <br />
+              Secure Environment v2.0
             </p>
           </div>
         </Card>
