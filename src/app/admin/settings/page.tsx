@@ -26,7 +26,7 @@ export default function SettingsAdminPage() {
     discordUrl: "https://discord.gg/ae7h2D5RB2",
     metaTitle: "PaulMaker Stream | GTPS Livestream Promotion Service",
     metaDescription: "Professional GTPS Livestream Promotion Service.",
-    googleSheetTestimonialsUrl: ""
+    googleSheetTestimonialsUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRfA3fdczM_gEODAnjYuNYjmTe48ZBdCkrvC4rRikwHzfI7c8Jbj8st_Ni1L6LI4iXh90HkDOTrXcwa/pub?output=csv"
   })
 
   useEffect(() => {

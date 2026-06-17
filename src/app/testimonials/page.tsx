@@ -33,22 +33,26 @@ export default function TestimonialsPage() {
   }, [db])
   const { data: firestoreTestimonials, isLoading: isFirestoreLoading } = useCollection(testimonialsQuery)
 
-  // Fetch from Google Sheets if URL exists
+  // Fetch from Google Sheets
   useEffect(() => {
     const fetchSheetData = async () => {
-      if (!settings?.googleSheetTestimonialsUrl) return
+      const url = settings?.googleSheetTestimonialsUrl || "https://docs.google.com/spreadsheets/d/e/2PACX-1vRfA3fdczM_gEODAnjYuNYjmTe48ZBdCkrvC4rRikwHzfI7c8Jbj8st_Ni1L6LI4iXh90HkDOTrXcwa/pub?output=csv"
       
       setIsSheetLoading(true)
       try {
-        const response = await fetch(settings.googleSheetTestimonialsUrl)
+        const response = await fetch(url)
         const text = await response.text()
         
-        // Simple CSV parsing (assuming: Nama, Durasi, Reach, ImageURL)
-        const rows = text.split("\n").slice(1) // Skip header
+        // Simple CSV parsing
+        const rows = text.split("\n")
         const parsed: TestimonialData[] = rows
+          .slice(1) // Skip header
           .filter(row => row.trim().length > 0)
           .map((row, index) => {
-            const [serverName, duration, playersReached, imageUrl] = row.split(",").map(cell => cell.trim())
+            // Handle basic comma separation (improve if names have commas)
+            const parts = row.split(",").map(cell => cell.trim().replace(/^"|"$/g, ''))
+            const [serverName, duration, playersReached, imageUrl] = parts
+            
             return {
               id: `sheet-${index}`,
               serverName: serverName || "Unknown Server",
@@ -68,8 +72,8 @@ export default function TestimonialsPage() {
     fetchSheetData()
   }, [settings?.googleSheetTestimonialsUrl])
 
-  const displayTestimonials = settings?.googleSheetTestimonialsUrl ? sheetData : firestoreTestimonials
-  const isLoading = settings?.googleSheetTestimonialsUrl ? isSheetLoading : isFirestoreLoading
+  const displayTestimonials = sheetData.length > 0 ? sheetData : firestoreTestimonials
+  const isLoading = isSheetLoading || (sheetData.length === 0 && isFirestoreLoading)
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -111,7 +115,7 @@ export default function TestimonialsPage() {
                           alt={item.serverName}
                           fill
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
-                          unoptimized // Google Sheets images might need this if from random hosts
+                          unoptimized 
                         />
                       ) : (
                         <div className="flex items-center justify-center h-full">
