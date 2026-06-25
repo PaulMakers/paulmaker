@@ -1,9 +1,8 @@
-
 import { NextResponse } from 'next/server';
 
 /**
  * Endpoint ini mengembalikan teks mentah (plain text) berisi konfigurasi hosts.
- * Berguna untuk aplikasi seperti PowerTunnel atau Hosts Editor yang bisa mengambil data via URL.
+ * Link ini yang harus dimasukkan ke dalam aplikasi seperti PowerTunnel atau Hosts Editor.
  */
 export async function GET() {
   const hostsContent = `5.39.46.38 growtopia1.com

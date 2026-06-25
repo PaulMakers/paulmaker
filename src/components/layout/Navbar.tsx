@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Crown, Calendar, MessageSquare, ShieldCheck, Menu, X } from "lucide-react"
+import { Crown, Calendar, MessageSquare, ShieldCheck, Menu, X, Smartphone } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
@@ -18,6 +18,7 @@ export default function Navbar() {
     { name: "Home", href: "/", icon: Crown },
     { name: "Schedule", href: "/schedule", icon: Calendar },
     { name: "Testimonials", href: "/testimonials", icon: MessageSquare },
+    { name: "Android", href: "/android", icon: Smartphone },
   ]
 
   return (
