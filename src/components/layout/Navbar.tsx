@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Crown, Calendar, MessageSquare, ShieldCheck, Menu, X, Smartphone } from "lucide-react"
+import { Crown, Calendar, MessageSquare, ShieldCheck, Menu, X, Smartphone, Apple } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
@@ -19,6 +19,7 @@ export default function Navbar() {
     { name: "Schedule", href: "/schedule", icon: Calendar },
     { name: "Testimonials", href: "/testimonials", icon: MessageSquare },
     { name: "Android", href: "/android", icon: Smartphone },
+    { name: "iOS", href: "/ios", icon: Apple },
   ]
 
   return (
@@ -46,7 +47,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
