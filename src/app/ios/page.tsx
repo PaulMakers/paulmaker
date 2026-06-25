@@ -125,7 +125,7 @@ www.growtopia2.com = 5.39.46.38`
                   </div>
                   <h4 className="font-bold mb-2 uppercase text-sm">Download URL</h4>
                   <p className="text-xs text-muted-foreground">
-                    Di aplikasi Shadowrocket, pilih <strong>Add Configuration</strong> > <strong>Download from URL</strong>, lalu tempel link <strong>paulmaker.site/ios/config</strong>.
+                    Di aplikasi Shadowrocket, pilih <strong>Add Configuration</strong> {" > "} <strong>Download from URL</strong>, lalu tempel link <strong>paulmaker.site/ios/config</strong>.
                   </p>
                 </Card>
 
